@@ -3,3 +3,8 @@ uvicorn
 yt-dlp 
 pydantic
 youtube-transcript-api
+qdrant-client
+sentence-transformers
+langchain-experimental
+langchain-huggingface
+chromadb

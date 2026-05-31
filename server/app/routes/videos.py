@@ -5,6 +5,10 @@ from app.schemas.video import AnalyzeRequest
 from app.services.metadata import extract_metadata
 from app.services.transcript import get_transcript
 
+from app.services.retriever import (
+    retrieve_context
+)
+
 router = APIRouter()
 
 
@@ -37,3 +41,13 @@ async def transcript(
     return {
         "transcript": transcript[:1000]
     }
+
+@router.get("/search")
+async def search(
+    query: str
+):
+    results = retrieve_context(
+        query
+    )
+
+    return results
