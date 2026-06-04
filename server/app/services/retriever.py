@@ -9,6 +9,7 @@ from app.services.embedding import (
 
 def retrieve_context(
     query: str,
+    video_id : str,
     k: int = 5
 ):
     query_embedding = embed_text(
@@ -20,6 +21,10 @@ def retrieve_context(
             query_embedding
         ],
         n_results=k,
+
+        where={
+            "video_id": video_id
+        }
     )
 
     return results
