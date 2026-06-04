@@ -36,11 +36,11 @@ def store_chunks(
 
             metadatas=[
                 {
-                    "video_id":
-                        video_id,
+                    "video_id":video_id,
 
-                    "chunk_id":
-                        idx,
+                    "chunk_id":idx,
+
+                    "source": video_id
                 }
             ]
         )

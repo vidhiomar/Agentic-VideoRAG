@@ -9,3 +9,4 @@ langchain-experimental
 langchain-huggingface
 chromadb
 google-generativeai
+langgraph
