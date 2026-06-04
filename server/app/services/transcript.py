@@ -1,10 +1,16 @@
-from youtube_transcript_api import YouTubeTranscriptApi
+from youtube_transcript_api import (
+    YouTubeTranscriptApi
+)
 import re
 
 
 def extract_video_id(url: str):
     pattern = r"(?:v=|\/)([0-9A-Za-z_-]{11})"
-    match = re.search(pattern, url)
+
+    match = re.search(
+        pattern,
+        url
+    )
 
     if match:
         return match.group(1)
@@ -13,13 +19,41 @@ def extract_video_id(url: str):
 
 
 def get_transcript(url: str):
-    video_id = extract_video_id(url)
+    try:
+        video_id = extract_video_id(
+            url
+        )
 
-    transcript_list = YouTubeTranscriptApi().fetch(video_id)
+        if not video_id:
+            return ""
 
-    full_text = " ".join(
-        chunk.text
-        for chunk in transcript_list
-    )
+        api = YouTubeTranscriptApi()
 
-    return full_text
+        # Try English first
+        try:
+            transcript = api.fetch(
+                video_id,
+                languages=[
+                    "en",
+                    "en-US",
+                    "en-GB"
+                ]
+            )
+
+        # Fallback to Hindi
+        except Exception:
+            transcript = api.fetch(
+                video_id,
+                languages=["hi"]
+            )
+
+        return " ".join(
+            chunk.text
+            for chunk in transcript
+        )
+
+    except Exception as e:
+        print(
+            f"Transcript Error: {e}"
+        )
+        return ""

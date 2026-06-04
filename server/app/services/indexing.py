@@ -11,6 +11,10 @@ def store_chunks(
     video_id: str,
     chunks
 ):
+    print(
+        f"STORE_CHUNKS CALLED: {video_id}"
+    )
+
     for idx, chunk in enumerate(chunks):
 
         embedding = embed_text(

@@ -3,6 +3,11 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.routes.videos import router
 
+from app.routes.chat import (
+    router as chat_router
+)
+
+
 app = FastAPI(
     title="Agentic VideoRAG"
 )
@@ -19,6 +24,12 @@ app.include_router(
     router,
     prefix="/videos",
     tags=["Videos"],
+)
+
+app.include_router(
+    chat_router,
+    prefix="/chat",
+    tags=["Chat"]
 )
 
 

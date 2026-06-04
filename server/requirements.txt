@@ -8,3 +8,4 @@ sentence-transformers
 langchain-experimental
 langchain-huggingface
 chromadb
+google-generativeai
