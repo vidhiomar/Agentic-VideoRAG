@@ -18,28 +18,21 @@ def generate_answer(
     context: str
 ):
     prompt = f"""
-You are an expert social media
-video analyst.
+You are an expert social media analyst.
 
-You are given chunks from:
+Answer using ONLY the provided context.
 
-VIDEO A
-VIDEO B
-
-Compare them carefully.
-
-Answer the question using
-evidence from both videos.
-
-If one video performs better,
-explain why.
+Rules:
+- Be concise.
+- Use bullet points.
+- Compare Video A and Video B directly.
+- If information is missing, say so.
+- Do not make assumptions.
 
 Context:
-
 {context}
 
 Question:
-
 {question}
 """
 

@@ -13,23 +13,41 @@ from app.services.llm import (
 )
 
 router = APIRouter()
-
-
 @router.post("/")
 async def chat(
     request: ChatRequest
 ):
-    results = retrieve_context(
-        request.question
+    results_a = retrieve_context(
+        request.question,
+        "video_A"
     )
 
-    docs = (
-        results["documents"][0]
+    results_b = retrieve_context(
+        request.question,
+        "video_B"
     )
 
-    context = "\n\n".join(
-        docs
+    docs_a = (
+        results_a["documents"][0]
+        if results_a["documents"]
+        else []
     )
+
+    docs_b = (
+        results_b["documents"][0]
+        if results_b["documents"]
+        else []
+    )
+
+    context = f"""
+VIDEO A:
+
+{chr(10).join(docs_a)}
+
+VIDEO B:
+
+{chr(10).join(docs_b)}
+"""
 
     answer = generate_answer(
         request.question,
@@ -38,5 +56,9 @@ async def chat(
 
     return {
         "answer": answer,
-        "sources": docs
+
+        "sources": {
+            "video_A": docs_a,
+            "video_B": docs_b
+        }
     }
