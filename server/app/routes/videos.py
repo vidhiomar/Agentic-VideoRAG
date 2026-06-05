@@ -21,6 +21,10 @@ from app.data.video_metadata import (
     video_metadata
 )
 
+from app.services.content_analysis import (
+    analyze_content
+)
+
 router = APIRouter()
 
 
@@ -44,6 +48,14 @@ async def analyze_videos(
             "error":
             "Transcript not available for Video A"
         }
+    
+    analysis_a = analyze_content(
+    transcript_a
+)
+
+    video_metadata["video_A"][
+        "analysis"
+    ] = analysis_a
 
     chunks_a = semantic_chunk_text(
         transcript_a
@@ -78,6 +90,14 @@ async def analyze_videos(
     chunks_b = semantic_chunk_text(
         transcript_b
     )
+
+    analysis_b = analyze_content(
+    transcript_b
+)
+
+    video_metadata["video_B"][
+        "analysis"
+    ] = analysis_b
 
     print(
     "Video B chunks:",
