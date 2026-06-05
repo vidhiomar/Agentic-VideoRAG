@@ -17,6 +17,10 @@ from app.services.retriever import (
     retrieve_context
 )
 
+from app.data.video_metadata import (
+    video_metadata
+)
+
 router = APIRouter()
 
 
@@ -24,11 +28,12 @@ router = APIRouter()
 async def analyze_videos(
     request: AnalyzeRequest,
 ):
-    # Video A
 
     video_a = extract_metadata(
         request.video_a
     )
+
+    video_metadata["video_A"] = video_a
 
     transcript_a = get_transcript(
         request.video_a
@@ -49,20 +54,22 @@ async def analyze_videos(
         chunks_a
     )
 
-    # Video B
-
     video_b = extract_metadata(
         request.video_b
     )
 
+    video_metadata["video_B"] = video_b
+
     transcript_b = get_transcript(
         request.video_b
     )
+
     if not transcript_b:
         return {
             "error":
             "Transcript not available for Video B"
         }
+
     chunks_b = semantic_chunk_text(
         transcript_b
     )
@@ -73,13 +80,17 @@ async def analyze_videos(
     )
 
     return {
+        "message": "Videos analyzed successfully",
         "videoA": video_a,
         "videoB": video_b
     }
 
+
 @router.get("/count")
 async def count():
-    from app.services.vector_store import collection
+    from app.services.vector_store import (
+        collection
+    )
 
     return {
         "count": collection.count()
@@ -91,14 +102,18 @@ async def search(
     query: str
 ):
     results = retrieve_context(
-        query
+        query,
+        "video_A"
     )
 
     return results
 
+
 @router.get("/reset")
 async def reset():
-    from app.services.vector_store import collection
+    from app.services.vector_store import (
+        collection
+    )
 
     data = collection.get()
 
@@ -108,5 +123,11 @@ async def reset():
         )
 
     return {
-        "message": "Collection cleared"
+        "message":
+        "Collection cleared"
     }
+
+
+@router.get("/metadata")
+async def metadata():
+    return video_metadata

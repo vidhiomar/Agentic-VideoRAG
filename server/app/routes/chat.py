@@ -12,6 +12,20 @@ from app.services.llm import (
     generate_answer
 )
 
+from app.data.video_metadata import (
+    video_metadata
+)
+
+metadata_a = video_metadata.get(
+    "video_A",
+    {}
+)
+
+metadata_b = video_metadata.get(
+    "video_B",
+    {}
+)
+
 router = APIRouter()
 @router.post("/")
 async def chat(

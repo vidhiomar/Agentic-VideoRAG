@@ -20,20 +20,28 @@ def generate_answer(
     prompt = f"""
 You are an expert social media analyst.
 
-Answer using ONLY the provided context.
+You have:
 
-Rules:
-- Be concise.
-- Use bullet points.
-- Compare Video A and Video B directly.
-- If information is missing, say so.
-- Do not make assumptions.
+1. Metadata
+2. Transcript chunks
 
-Context:
-{context}
+Use both.
+
+When comparing videos:
+- Compare engagement
+- Compare content
+- Compare hooks
+- Compare creators
+
+Use bullet points.
 
 Question:
+
 {question}
+
+Context:
+
+{context}
 """
 
     response = model.generate_content(
