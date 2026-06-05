@@ -1,10 +1,6 @@
-from app.services.vector_store import (
-    collection
-)
+from app.services.vector_store import (collection)
 
-from app.services.embedding import (
-    embed_text
-)
+from app.services.embedding import (embed_text)
 
 
 def retrieve_context(
@@ -12,9 +8,7 @@ def retrieve_context(
     video_id : str,
     k: int = 5
 ):
-    query_embedding = embed_text(
-        query
-    )
+    query_embedding = embed_text(query)
 
     results = collection.query(
         query_embeddings=[

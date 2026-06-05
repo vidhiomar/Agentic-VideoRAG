@@ -44,14 +44,26 @@ async def chat(
     )
 
     docs_a = (
-        results_a["documents"][0]
+        results_a["documents"]
         if results_a["documents"]
         else []
     )
 
     docs_b = (
-        results_b["documents"][0]
+        results_b["documents"]
         if results_b["documents"]
+        else []
+    )
+
+    meta_a = (
+    results_a["metadatas"]
+    if results_a["metadatas"]
+    else []
+    )
+
+    meta_b = (
+        results_b["metadatas"]
+        if results_b["metadatas"]
         else []
     )
 
@@ -117,16 +129,43 @@ VIDEO B TRANSCRIPT
     answer = generate_answer(
         request.question,
         context
+
     )
+    citations = []
+
+    for m in meta_a:
+        citations.append(
+            {
+                "video":
+                "video_A",
+
+                "chunk_id":
+                m["chunk_id"]
+            }
+        )
+
+    for m in meta_b:
+        citations.append(
+            {
+                "video":
+                "video_B",
+
+                "chunk_id":
+                m["chunk_id"]
+            }
+        )
 
     return {
-        "answer": answer,
-        "sources": {
-            "video_A": docs_a,
-            "video_B": docs_b
-        },
-        "metadata": {
-            "video_A": metadata_a,
-            "video_B": metadata_b
-        }
+    "answer": answer,
+
+    "citations":
+    citations,
+
+    "metadata": {
+        "video_A":
+        metadata_a,
+
+        "video_B":
+        metadata_b
     }
+}
