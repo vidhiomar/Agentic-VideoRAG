@@ -23,7 +23,7 @@ def semantic_chunk_text(
         "percentile",
 
         breakpoint_threshold_amount=
-        80
+        60
     )
 
     chunks = splitter.create_documents(

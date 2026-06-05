@@ -49,6 +49,11 @@ async def analyze_videos(
         transcript_a
     )
 
+    print(
+    "Video A chunks:",
+    len(chunks_a)
+    )
+
     store_chunks(
         "video_A",
         chunks_a
@@ -73,6 +78,11 @@ async def analyze_videos(
     chunks_b = semantic_chunk_text(
         transcript_b
     )
+
+    print(
+    "Video B chunks:",
+    len(chunks_b)
+)
 
     store_chunks(
         "video_B",
