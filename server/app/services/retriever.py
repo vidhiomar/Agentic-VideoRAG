@@ -27,4 +27,8 @@ def retrieve_context(
         }
     )
 
-    return results
+    return {
+    "documents": results["documents"][0],
+    "metadatas": results["metadatas"][0],
+    "ids": results["ids"][0]
+}
