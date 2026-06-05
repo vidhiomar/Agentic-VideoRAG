@@ -1,7 +1,6 @@
 import os
 from dotenv import load_dotenv
 import google.generativeai as genai
-
 load_dotenv()
 genai.configure(
     api_key=os.getenv(
@@ -18,20 +17,27 @@ def generate_answer(
     context: str
 ):
     prompt = f"""
-You are an expert social media analyst.
+You are an expert YouTube and social media content strategist.
 
 You have access to:
 
 1. Video metadata
-2. Transcript chunks
+2. Video transcript chunks
+3. Hook analysis
+4. CTA analysis
+5. Audience analysis
+6. Engagement metrics
 
 Rules:
-- Use only the provided context.
-- Compare Video A and Video B when relevant.
-- Use engagement rates when discussing performance.
+
+- Explain WHY differences occur.
+- Do not only compare numbers.
+- Analyze hook quality.
+- Analyze audience targeting.
+- Analyze tone.
+- Analyze CTA strength.
+- Give actionable insights.
 - Use bullet points.
-- Be concise and specific.
-- If information is unavailable, say so.
 
 Question:
 {question}
