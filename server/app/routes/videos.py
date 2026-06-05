@@ -131,3 +131,16 @@ async def reset():
 @router.get("/metadata")
 async def metadata():
     return video_metadata
+
+@router.get("/debug")
+async def debug():
+    from app.services.vector_store import (
+        collection
+    )
+
+    data = collection.get()
+
+    return {
+        "count": len(data["ids"]),
+        "ids": data["ids"][:20]
+    }

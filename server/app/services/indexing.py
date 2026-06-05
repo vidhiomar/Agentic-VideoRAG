@@ -8,12 +8,21 @@ from app.services.embedding import (
 
 
 def store_chunks(
-    video_id: str,
+    video_id,
     chunks
 ):
-    print(
-        f"STORE_CHUNKS CALLED: {video_id}"
+    existing = collection.get(
+        where={
+            "video_id": video_id
+        }
     )
+
+    if existing["ids"]:
+        collection.delete(
+            ids=existing["ids"]
+        )
+
+    
 
     for idx, chunk in enumerate(chunks):
 

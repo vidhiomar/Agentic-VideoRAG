@@ -6,7 +6,7 @@ from app.services.embedding import (embed_text)
 def retrieve_context(
     query: str,
     video_id : str,
-    k: int = 5
+    k: int = 3
 ):
     query_embedding = embed_text(query)
 
