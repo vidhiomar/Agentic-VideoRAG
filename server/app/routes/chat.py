@@ -28,10 +28,20 @@ async def chat(
         {}
     )
 
+    analysis_a = metadata_a.get(
+    "analysis",
+    {}
+)
+
     metadata_b = video_metadata.get(
         "video_B",
         {}
     )
+
+    analysis_b = metadata_b.get(
+    "analysis",
+    {}
+)
 
     results_a = retrieve_context(
         request.question,
@@ -91,7 +101,24 @@ Duration:
 Engagement Rate:
 {metadata_a.get("engagement_rate", "N/A")}
 
+VIDEO A ANALYSIS
+Hook:
+{analysis_a.get("hook", "N/A")}
 
+Summary:
+{analysis_a.get("summary", "N/A")}
+
+CTA:
+{analysis_a.get("cta", "N/A")}
+
+Tone:
+{analysis_a.get("tone", "N/A")}
+
+Target Audience:
+{analysis_a.get("target_audience", "N/A")}
+
+Key Topics:
+{analysis_a.get("key_topics", [])}
 VIDEO A TRANSCRIPT
 
 {chr(10).join(docs_a)}
@@ -120,6 +147,26 @@ Duration:
 Engagement Rate:
 {metadata_b.get("engagement_rate", "N/A")}
 
+
+VIDEO B ANALYSIS
+
+Hook:
+{analysis_b.get("hook", "N/A")}
+
+Summary:
+{analysis_b.get("summary", "N/A")}
+
+CTA:
+{analysis_b.get("cta", "N/A")}
+
+Tone:
+{analysis_b.get("tone", "N/A")}
+
+Target Audience:
+{analysis_b.get("target_audience", "N/A")}
+
+Key Topics:
+{analysis_b.get("key_topics", [])}
 
 VIDEO B TRANSCRIPT
 
