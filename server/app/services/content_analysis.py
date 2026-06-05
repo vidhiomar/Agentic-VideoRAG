@@ -9,36 +9,70 @@ def analyze_content(
     transcript: str
 ):
     prompt = f"""
-Analyze this video transcript.
+You are an expert video content analyst.
 
-Return ONLY valid JSON.
+Analyze the transcript and return ONLY a valid JSON object.
 
-Required format:
+Do NOT add explanations.
+Do NOT use markdown.
+Do NOT wrap the response in ```json.
+
+Required JSON format:
 
 {{
-    "hook": "",
-    "summary": "",
-    "cta": "",
-    "tone": "",
-    "target_audience": "",
-    "key_topics": []
+    "hook": "Opening hook of the video",
+    "summary": "Short summary of the video",
+    "cta": "Call to action used by creator",
+    "tone": "Tone of the video",
+    "target_audience": "Target audience",
+    "key_topics": [
+        "topic1",
+        "topic2"
+    ]
 }}
 
 Transcript:
 
-{transcript[:6000]}
+{transcript[:5000]}
 """
 
-    response = model.generate_content(
-        prompt
-    )
-
     try:
-        return json.loads(
-            response.text
+
+        response = model.generate_content(
+            prompt
         )
 
-    except:
+        text = response.text.strip()
+
+        print("\n========== GEMINI RAW OUTPUT ==========")
+        print(text)
+        print("=======================================\n")
+
+        text = text.replace(
+            "```json",
+            ""
+        )
+
+        text = text.replace(
+            "```",
+            ""
+        )
+
+        text = text.strip()
+
+        data = json.loads(
+            text
+        )
+
+        return data
+
+    except Exception as e:
+
+        print(
+            "CONTENT ANALYSIS ERROR:",
+            e
+        )
+
         return {
             "hook": "",
             "summary": "",
