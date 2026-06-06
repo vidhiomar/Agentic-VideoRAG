@@ -1,11 +1,42 @@
 "use client";
 
+import { ReactNode } from "react";
 import { Message } from "@/types/chat";
 
 type Props = {
   message: Message;
   index?: number;
 };
+
+function renderBoldText(text: string): ReactNode[] {
+  return text.split(/(\*\*[^*]+\*\*)/g).map((part, index) => {
+    if (part.startsWith("**") && part.endsWith("**")) {
+      return (
+        <strong key={index} style={{ fontWeight: 700 }}>
+          {part.slice(2, -2)}
+        </strong>
+      );
+    }
+
+    return part;
+  });
+}
+
+function renderMessageContent(content: string) {
+  return content.split("\n").map((line, index) => {
+    const trimmedLine = line.trim();
+
+    if (!trimmedLine) {
+      return <br key={index} />;
+    }
+
+    return (
+      <div key={index} style={{ marginBottom: "6px" }}>
+        {renderBoldText(line)}
+      </div>
+    );
+  });
+}
 
 export default function MessageBubble({ message, index = 0 }: Props) {
   const isUser = message.role === "user";
@@ -15,7 +46,11 @@ export default function MessageBubble({ message, index = 0 }: Props) {
     <div
       className={`flex ${isUser ? "justify-end" : "justify-start"}`}
       style={{
-        animation: `${isUser ? 'slideInRight' : 'slideInLeft'} 0.4s var(--ease-out-expo) ${delay}ms both`,
+        animationName: isUser ? "slideInRight" : "slideInLeft",
+        animationDuration: "0.4s",
+        animationTimingFunction: "var(--ease-out-expo)",
+        animationDelay: `${delay}ms`,
+        animationFillMode: "both",
       }}
     >
       {/* Bot avatar */}
@@ -48,9 +83,7 @@ export default function MessageBubble({ message, index = 0 }: Props) {
         fontFamily: "var(--font-dm-sans, 'DM Sans'), sans-serif",
         ...(isUser
           ? {
-              background: 'var(--accent-gradient)',
-              backgroundSize: '200% 200%',
-              animation: `gradientShift 4s ease infinite`,
+              background: 'linear-gradient(135deg, #E8553A 0%, #D97706 100%)',
               color: 'white',
               boxShadow: '0 4px 16px rgba(232, 85, 58, 0.2)',
             }
@@ -62,7 +95,7 @@ export default function MessageBubble({ message, index = 0 }: Props) {
             }
         ),
       }}>
-        {message.content}
+        {renderMessageContent(message.content)}
 
         {/* Timestamp */}
         <div style={{

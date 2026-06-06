@@ -1,5 +1,14 @@
+export interface VideoAnalysis {
+  hook: string;
+  summary: string;
+  cta: string;
+  tone: string;
+  target_audience: string;
+  key_topics: string[];
+}
+
 export interface Video {
-  id: string;
+  id?: string;
   title: string;
   creator: string;
   thumbnail: string;
@@ -12,7 +21,9 @@ export interface Video {
   followers?: number;
 
   duration?: string;
-  uploadDate?: string;
+  upload_date?: string;
 
-  engagementRate: number;
+  engagement_rate: number;
+
+  analysis?: VideoAnalysis;
 }

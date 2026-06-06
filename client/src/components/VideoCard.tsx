@@ -1,14 +1,45 @@
 "use client";
 
+/* eslint-disable @next/next/no-img-element */
 import { Video } from "@/types/video";
-
+import React from "react";
 type Props = {
   video: Video;
   index?: number;
 };
 
+function formatDuration(value: string | number | undefined): string {
+  if (!value) return "";
+  if (typeof value === "string") return value;
+  // Fallback: if a number is passed, format it as M:SS
+  const seconds = Math.floor(value);
+  const h = Math.floor(seconds / 3600);
+  const m = Math.floor((seconds % 3600) / 60);
+  const s = seconds % 60;
+  if (h > 0) return `${h}:${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
+  return `${m}:${String(s).padStart(2, "0")}`;
+}
+
 export default function VideoCard({ video, index = 0 }: Props) {
   const delay = index * 150;
+
+  const safeVideo = {
+    ...video,
+    thumbnail: video.thumbnail || "",
+    title: video.title || "Untitled Video",
+    creator: video.creator || "Unknown Creator",
+    platform: video.platform || "youtube" as const,
+    engagement_rate: video.engagement_rate ?? 0,
+    views: video.views ?? 0,
+    likes: video.likes ?? 0,
+    comments: video.comments ?? 0,
+    followers: video.followers ?? 0,
+    upload_date: video.upload_date || "",
+    duration: video.duration || "",
+  };
+
+  const engagementRate = Number(safeVideo.engagement_rate) || 0;
+  const displayDuration = formatDuration(safeVideo.duration);
 
   return (
     <div
@@ -19,20 +50,32 @@ export default function VideoCard({ video, index = 0 }: Props) {
     >
       {/* Thumbnail with overlay */}
       <div className="relative overflow-hidden">
-        <img
-          src={video.thumbnail}
-          alt={video.title}
-          className="w-full h-56 object-cover"
-          style={{
-            transition: 'transform 0.6s var(--ease-out-expo)',
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.transform = 'scale(1.06)';
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.transform = 'scale(1)';
-          }}
-        />
+        {safeVideo.thumbnail ? (
+  <img
+    src={safeVideo.thumbnail}
+    alt={safeVideo.title}
+    className="w-full h-56 object-cover"
+    style={{
+      transition: "transform 0.6s var(--ease-out-expo)",
+    }}
+    onMouseEnter={(e) => {
+      e.currentTarget.style.transform = "scale(1.06)";
+    }}
+    onMouseLeave={(e) => {
+      e.currentTarget.style.transform = "scale(1)";
+    }}
+  />
+) : (
+  <div
+    className="w-full h-56 flex items-center justify-center"
+    style={{
+      background: "#1f2937",
+      color: "#9ca3af",
+    }}
+  >
+    No Thumbnail
+  </div>
+)}
 
         {/* Dark gradient overlay */}
         <div style={{
@@ -43,7 +86,7 @@ export default function VideoCard({ video, index = 0 }: Props) {
         }} />
 
         {/* Duration badge */}
-        {video.duration && (
+        {displayDuration && (
           <div style={{
             position: 'absolute',
             bottom: '12px',
@@ -65,7 +108,7 @@ export default function VideoCard({ video, index = 0 }: Props) {
               <circle cx="12" cy="12" r="10" />
               <polyline points="12 6 12 12 16 14" />
             </svg>
-            {video.duration}
+            {displayDuration}
           </div>
         )}
 
@@ -104,7 +147,7 @@ export default function VideoCard({ video, index = 0 }: Props) {
         {/* Platform + Engagement Rate */}
         <div className="flex items-center justify-between mb-3">
           <span className="badge badge-platform">
-            {video.platform === 'youtube' ? (
+            {safeVideo.platform === 'youtube' ? (
               <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.5 12 3.5 12 3.5s-7.5 0-9.4.6A3 3 0 0 0 .5 6.2 31.4 31.4 0 0 0 0 12a31.4 31.4 0 0 0 .5 5.8 3 3 0 0 0 2.1 2.1c1.9.6 9.4.6 9.4.6s7.5 0 9.4-.6a3 3 0 0 0 2.1-2.1A31.4 31.4 0 0 0 24 12a31.4 31.4 0 0 0-.5-5.8zM9.5 15.6V8.4L16 12l-6.5 3.6z"/>
               </svg>
@@ -113,7 +156,7 @@ export default function VideoCard({ video, index = 0 }: Props) {
                 <path d="M12 2.2c3.2 0 3.6 0 4.9.1 1.2.1 1.8.2 2.2.4.6.2 1 .5 1.4.9.4.4.7.8.9 1.4.2.4.4 1.1.4 2.2.1 1.3.1 1.6.1 4.8s0 3.6-.1 4.9c-.1 1.2-.2 1.8-.4 2.2-.2.6-.5 1-.9 1.4-.4.4-.8.7-1.4.9-.4.2-1.1.4-2.2.4-1.3.1-1.6.1-4.9.1s-3.6 0-4.9-.1c-1.2-.1-1.8-.2-2.2-.4-.6-.2-1-.5-1.4-.9-.4-.4-.7-.8-.9-1.4-.2-.4-.4-1.1-.4-2.2-.1-1.3-.1-1.6-.1-4.9s0-3.6.1-4.9c.1-1.2.2-1.8.4-2.2.2-.6.5-1 .9-1.4.4-.4.8-.7 1.4-.9.4-.2 1.1-.4 2.2-.4 1.3-.1 1.6-.1 4.9-.1zm0-2.2C8.7 0 8.3 0 7 .1 5.7.1 4.8.3 4 .6c-.8.3-1.5.7-2.2 1.4C1.1 2.7.7 3.4.4 4.2.1 5 0 5.9 0 7.2 0 8.5 0 8.9 0 12.2s0 3.7.1 5c.1 1.3.3 2.2.6 3 .3.8.7 1.5 1.4 2.2.7.7 1.4 1.1 2.2 1.4.8.3 1.7.5 3 .6 1.3.1 1.7.1 5 .1s3.7 0 5-.1c1.3-.1 2.2-.3 3-.6.8-.3 1.5-.7 2.2-1.4.7-.7 1.1-1.4 1.4-2.2.3-.8.5-1.7.6-3 .1-1.3.1-1.7.1-5s0-3.7-.1-5c-.1-1.3-.3-2.2-.6-3-.3-.8-.7-1.5-1.4-2.2C21.3 1.5 20.6 1.1 19.8.8 19 .5 18.1.3 16.8.2 15.5.1 15.1 0 11.8 0h.2zM12 5.8a6.2 6.2 0 1 0 0 12.4A6.2 6.2 0 0 0 12 5.8zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.4-10.8a1.4 1.4 0 1 0 0 2.8 1.4 1.4 0 0 0 0-2.8z"/>
               </svg>
             )}
-            {video.platform.toUpperCase()}
+            {safeVideo.platform.toUpperCase()}
           </span>
 
           <span className="badge badge-success">
@@ -121,7 +164,7 @@ export default function VideoCard({ video, index = 0 }: Props) {
               <polyline points="22 7 13.5 15.5 8.5 10.5 2 17" />
               <polyline points="16 7 22 7 22 13" />
             </svg>
-            ER {video.engagementRate.toFixed(2)}%
+            ER {engagementRate.toFixed(2)}%
           </span>
         </div>
 
@@ -138,7 +181,7 @@ export default function VideoCard({ video, index = 0 }: Props) {
           WebkitBoxOrient: 'vertical',
           overflow: 'hidden',
         }}>
-          {video.title}
+          {safeVideo.title}
         </h3>
 
         {/* Creator */}
@@ -155,7 +198,7 @@ export default function VideoCard({ video, index = 0 }: Props) {
             <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
             <circle cx="12" cy="7" r="4" />
           </svg>
-          {video.creator}
+          {safeVideo.creator}
         </p>
 
         {/* Stats Grid */}
@@ -174,7 +217,7 @@ export default function VideoCard({ video, index = 0 }: Props) {
               fontSize: '1rem',
               color: 'var(--text-primary)',
             }}>
-              {video.views.toLocaleString()}
+              {safeVideo.views.toLocaleString()}
             </p>
           </div>
 
@@ -191,7 +234,7 @@ export default function VideoCard({ video, index = 0 }: Props) {
               fontSize: '1rem',
               color: 'var(--text-primary)',
             }}>
-              {video.likes.toLocaleString()}
+              {safeVideo.likes.toLocaleString()}
             </p>
           </div>
 
@@ -208,7 +251,7 @@ export default function VideoCard({ video, index = 0 }: Props) {
               fontSize: '1rem',
               color: 'var(--text-primary)',
             }}>
-              {video.comments.toLocaleString()}
+              {safeVideo.comments.toLocaleString()}
             </p>
           </div>
 
@@ -228,13 +271,13 @@ export default function VideoCard({ video, index = 0 }: Props) {
               fontSize: '1rem',
               color: 'var(--text-primary)',
             }}>
-              {video.followers?.toLocaleString() || "N/A"}
+              {safeVideo.followers?.toLocaleString() || "N/A"}
             </p>
           </div>
         </div>
 
         {/* Upload date */}
-        {video.uploadDate && (
+        {safeVideo.upload_date && (
           <div style={{
             marginTop: '16px',
             paddingTop: '14px',
@@ -252,7 +295,7 @@ export default function VideoCard({ video, index = 0 }: Props) {
               <line x1="8" y1="2" x2="8" y2="6" />
               <line x1="3" y1="10" x2="21" y2="10" />
             </svg>
-            Uploaded {video.uploadDate}
+            Uploaded {safeVideo.upload_date}
           </div>
         )}
       </div>

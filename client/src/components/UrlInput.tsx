@@ -3,7 +3,7 @@
 import { useState } from "react";
 
 type UrlInputProps = {
-  onAnalyze: (videoA: string, videoB: string) => void;
+  onAnalyze: (videoA: string, videoB: string) => void | Promise<void>;
   isLoading?: boolean;
 };
 
@@ -90,7 +90,7 @@ export default function UrlInput({
               </div>
               <input
                 id="videoA"
-                type="url"
+                type="text"
                 placeholder="https://youtube.com/watch?v=..."
                 value={videoA}
                 onChange={(e) => setVideoA(e.target.value)}
@@ -130,7 +130,7 @@ export default function UrlInput({
               </div>
               <input
                 id="videoB"
-                type="url"
+                type="text"
                 placeholder="https://instagram.com/reel/..."
                 value={videoB}
                 onChange={(e) => setVideoB(e.target.value)}
