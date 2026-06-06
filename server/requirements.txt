@@ -2,11 +2,11 @@ fastapi
 uvicorn
 yt-dlp 
 pydantic
+python-dotenv
 youtube-transcript-api
-qdrant-client
 sentence-transformers
 langchain-experimental
 langchain-huggingface
 chromadb
+google-genai
 google-generativeai
-langgraph

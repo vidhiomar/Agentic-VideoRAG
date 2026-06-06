@@ -3,7 +3,7 @@ from app.services.vector_store import (
 )
 
 from app.services.embedding import (
-    embed_text
+    embed_texts
 )
 
 
@@ -11,6 +11,7 @@ def store_chunks(
     video_id,
     chunks
 ):
+    # Delete existing chunks for this video
     existing = collection.get(
         where={
             "video_id": video_id
@@ -22,34 +23,40 @@ def store_chunks(
             ids=existing["ids"]
         )
 
-    
+    if not chunks:
+        return
 
-    for idx, chunk in enumerate(chunks):
+    # Batch: extract all texts, embed all at once, insert all at once
+    texts = [
+        chunk.page_content
+        for chunk in chunks
+    ]
 
-        embedding = embed_text(
-            chunk.page_content
-        )
+    ids = [
+        f"{video_id}_{idx}"
+        for idx in range(len(chunks))
+    ]
 
-        collection.add(
-            ids=[
-                f"{video_id}_{idx}"
-            ],
+    metadatas = [
+        {
+            "video_id": video_id,
+            "chunk_id": str(idx),
+            "source": video_id
+        }
+        for idx in range(len(chunks))
+    ]
 
-            embeddings=[
-                embedding
-            ],
+    # Single batch embedding call instead of N individual calls
+    embeddings = embed_texts(texts)
 
-            documents=[
-                chunk.page_content
-            ],
+    # Single batch insert instead of N individual inserts
+    collection.add(
+        ids=ids,
+        embeddings=embeddings,
+        documents=texts,
+        metadatas=metadatas
+    )
 
-            metadatas=[
-                {
-                    "video_id":video_id,
-
-                    "chunk_id":idx,
-
-                    "source": video_id
-                }
-            ]
-        )
+    print(
+        f"Stored {len(chunks)} chunks for {video_id} (batch)"
+    )
